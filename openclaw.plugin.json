@@ -15,11 +15,11 @@
       "persistToDisk": {
         "type": "boolean",
         "default": true,
-        "description": "Save memories to disk in memory mode (stored in ~/.openclaw-memory/)"
+        "description": "Save memories to disk in memory mode (stored in ~/.openclaw/workspace/vector-memory/)"
       },
       "storagePath": {
         "type": "string",
-        "description": "Custom storage path for disk persistence (leave empty for default ~/.openclaw-memory/)"
+        "description": "Custom storage path for disk persistence (leave empty for default ~/.openclaw/workspace/vector-memory/)"
       },
       "collectionName": {
         "type": "string",
@@ -62,12 +62,12 @@
     },
     "persistToDisk": {
       "label": "Persist to Disk",
-      "help": "Save memories to disk in memory mode. Data will be stored in ~/.openclaw-memory/ and survive restarts. Only applies when Qdrant URL is empty."
+      "help": "Save memories to disk in memory mode. Data will be stored in ~/.openclaw/workspace/vector-memory/ and survive restarts. Only applies when Qdrant URL is empty."
     },
     "storagePath": {
       "label": "Storage Path",
-      "placeholder": "~/.openclaw-memory/",
-      "help": "Custom directory for storing memories. Leave empty to use default (~/.openclaw-memory/). Only applies when persistToDisk is enabled.",
+      "placeholder": "~/.openclaw/workspace/vector-memory/",
+      "help": "Custom directory for storing memories. Leave empty to use default (~/.openclaw/workspace/vector-memory/). Only applies when persistToDisk is enabled.",
       "advanced": true
     },
     "collectionName": {

@@ -110,12 +110,12 @@ Enable the plugin in your OpenClaw config file:
 
 - **qdrantUrl** (optional): external Qdrant server URL, leave empty to use in-memory mode
 - **persistToDisk** (default true): save memories to disk in in-memory mode
-  - Data is stored in `~/.openclaw-memory/` (or a custom path)
+  - Data is stored in `~/.openclaw/workspace/vector-memory/` (or a custom path)
   - Data survives restarts
   - Set to false for pure in-memory mode (cleared on restart)
   - Only applies in in-memory mode (when qdrantUrl is not configured)
 - **storagePath** (optional): custom storage directory
-  - Leave empty to use the default path `~/.openclaw-memory/`
+  - Leave empty to use the default path `~/.openclaw/workspace/vector-memory/`
   - Supports `~` for the user home directory
   - Only applies when `persistToDisk: true`
 - **autoCapture** (default false): automatically record conversation content
@@ -138,7 +138,7 @@ Enable the plugin in your OpenClaw config file:
 
 ### Data storage
 
-- **Disk persistence** (default): data is saved to `~/.openclaw-memory/` and restored after restarts
+- **Disk persistence** (default): data is saved to `~/.openclaw/workspace/vector-memory/` and restored after restarts
   - Set `persistToDisk: false` to switch to pure in-memory mode (cleared on restart)
 - **Qdrant mode**: if `qdrantUrl` is configured, data is sent to that server
   - ⚠️ Only configure trusted Qdrant servers

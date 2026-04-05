@@ -8,7 +8,7 @@ All notable changes to this project will be documented in this file.
 - **Custom Storage Path**: New `storagePath` configuration option
   - Allows users to specify custom directory for storing memories
   - Supports `~` for home directory
-  - Defaults to `~/.openclaw-memory/` if not specified
+  - Defaults to `~/.openclaw/workspace/vector-memory/` if not specified
 
 ## [1.0.14] - 2026-02-17
 
@@ -21,7 +21,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - **Disk Persistence**: New `persistToDisk` configuration option for memory mode
-  - Memories are saved to `~/.openclaw-memory/` and survive restarts
+  - Memories are saved to `~/.openclaw/workspace/vector-memory/` and survive restarts
   - Only applies when using in-memory mode (no qdrantUrl configured)
   - Automatic save on store/delete operations
   - Automatic load on plugin initialization

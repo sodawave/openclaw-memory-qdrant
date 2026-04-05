@@ -50,8 +50,8 @@ Enable in your OpenClaw config:
 ```
 
 **Options:**
-- `persistToDisk` (default: true) - Save memories to disk in memory mode. Data stored in `~/.openclaw-memory/` survives restarts. Set to false for volatile memory.
-- `storagePath` (optional) - Custom storage directory. Leave empty for default `~/.openclaw-memory/`.
+- `persistToDisk` (default: true) - Save memories to disk in memory mode. Data stored in `~/.openclaw/workspace/vector-memory/` survives restarts. Set to false for volatile memory.
+- `storagePath` (optional) - Custom storage directory. Leave empty for default `~/.openclaw/workspace/vector-memory/`.
 - `autoCapture` (default: false) - Auto-record conversations. **Privacy protection enabled by default**: text containing PII (emails, phone numbers) is automatically skipped.
 - `allowPIICapture` (default: false) - Allow capturing PII when autoCapture is enabled. **Only enable if you understand the privacy implications.**
 - `autoRecall` (default: true) - Auto-inject relevant memories
@@ -86,7 +86,7 @@ memory_forget({ query: "text to forget" })
 
 ## Privacy & Security
 
-- **Disk persistence** (default): Memories saved to `~/.openclaw-memory/` and survive restarts. Set `persistToDisk: false` for volatile memory.
+- **Disk persistence** (default): Memories saved to `~/.openclaw/workspace/vector-memory/` and survive restarts. Set `persistToDisk: false` for volatile memory.
 - **In-memory mode**: When `persistToDisk: false`, data cleared on restart
 - **Qdrant mode**: Data sent to configured server (use trusted servers only)
 - **Network**: Downloads ~25MB model from Hugging Face on first run
