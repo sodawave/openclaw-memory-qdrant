@@ -1,25 +1,25 @@
 # openclaw-memory-qdrant
 
-OpenClaw 本地语义记忆插件，基于 Qdrant 和 Transformers.js 实现零配置的语义搜索。
+OpenClaw local semantic memory plugin, based on Qdrant and Transformers.js for zero-config semantic search.
 
 **📦 ClawHub**: https://clawhub.ai/skills/memory-qdrant
 
-## 特性
+## Features
 
-- 🧠 **本地语义搜索** - 使用 Transformers.js 在本地生成 embeddings
-- 💾 **内存模式** - 零配置，无需外部服务
-- 🔄 **自动捕获** - 通过 lifecycle hooks 自动记录重要信息
-- 🎯 **智能召回** - 根据上下文自动检索相关记忆
+- 🧠 **Local semantic search** - generates embeddings locally using Transformers.js
+- 💾 **In-memory mode** - zero configuration, no external services required
+- 🔄 **Auto-capture** - automatically records important information via lifecycle hooks
+- 🎯 **Smart recall** - automatically retrieves relevant memories based on context
 
-## 安装
+## Installation
 
-### 通过 ClawHub（推荐）
+### Via ClawHub (recommended)
 
 ```bash
 clawhub install memory-qdrant
 ```
 
-### 手动安装
+### Manual installation
 
 ```bash
 cd ~/.openclaw/plugins
@@ -28,16 +28,16 @@ cd memory-qdrant
 npm install
 ```
 
-### 安装要求
+### Requirements
 
-**首次运行准备：**
+**Before first run:**
 
-1. **Node.js 版本**: 需要 Node.js ≥18.17
+1. **Node.js version**: requires Node.js ≥18.17
    ```bash
-   node --version  # 检查版本
+   node --version  # check version
    ```
 
-2. **构建工具**（用于编译原生依赖）:
+2. **Build tools** (for compiling native dependencies):
    - **Windows**: Visual Studio Build Tools
      ```powershell
      npm install --global windows-build-tools
@@ -52,53 +52,53 @@ npm install
      sudo yum groupinstall "Development Tools"  # RHEL/CentOS
      ```
 
-3. **网络访问**:
-   - 安装时需要访问 npmjs.com 下载依赖包
-   - 首次运行时会从 huggingface.co 下载 embedding 模型（约 25MB）
-   - 如果配置了外部 Qdrant 服务器，需要能访问该服务器
+3. **Network access**:
+   - Requires access to npmjs.com to download dependencies during installation
+   - Downloads the embedding model (~25MB) from huggingface.co on first run
+   - If an external Qdrant server is configured, that server must be reachable
 
-4. **原生依赖**:
-   - `sharp`: 图像处理库（可能需要编译）
-   - `onnxruntime`: ML 推理引擎（可能需要编译）
-   - `undici`: HTTP 客户端（通过 @qdrant/js-client-rest 引入）
+4. **Native dependencies**:
+   - `sharp`: image processing library (may require compilation)
+   - `onnxruntime`: ML inference engine (may require compilation)
+   - `undici`: HTTP client (pulled in via @qdrant/js-client-rest)
 
-### 推荐安装方式
+### Recommended installation
 
 ```bash
-# 使用 npm ci 确保可重现的安装（推荐用于生产环境）
+# Use npm ci for reproducible installs (recommended for production)
 npm ci
 
-# 或者分步安装（用于调试）
-npm install --ignore-scripts  # 跳过 post-install 脚本
-npm rebuild                    # 然后重新构建原生模块
+# Or step-by-step (useful for debugging)
+npm install --ignore-scripts  # skip post-install scripts
+npm rebuild                    # then rebuild native modules
 ```
 
-### 故障排除
+### Troubleshooting
 
-**问题: 原生模块编译失败**
-- 确保已安装对应平台的构建工具
-- 尝试清理缓存: `npm cache clean --force`
-- 删除 node_modules 重新安装: `rm -rf node_modules && npm install`
+**Problem: native module compilation failed**
+- Ensure the appropriate build tools for your platform are installed
+- Try clearing the cache: `npm cache clean --force`
+- Delete node_modules and reinstall: `rm -rf node_modules && npm install`
 
-**问题: 模型下载失败**
-- 检查网络连接和防火墙设置
-- 确保能访问 huggingface.co
-- 模型会缓存在 `~/.cache/huggingface/` 目录
+**Problem: model download failed**
+- Check network connectivity and firewall settings
+- Ensure huggingface.co is accessible
+- The model is cached in `~/.cache/huggingface/`
 
-**问题: Node 版本不兼容**
-- 升级到 Node.js 18.17 或更高版本
-- 使用 nvm 管理多个 Node 版本: `nvm install 18 && nvm use 18`
+**Problem: incompatible Node version**
+- Upgrade to Node.js 18.17 or higher
+- Use nvm to manage multiple Node versions: `nvm install 18 && nvm use 18`
 
-## 配置
+## Configuration
 
-在 OpenClaw 配置文件中启用插件：
+Enable the plugin in your OpenClaw config file:
 
 ```json
 {
   "plugins": {
     "memory-qdrant": {
       "enabled": true,
-      "autoCapture": false,  // 默认关闭，需要时手动开启
+      "autoCapture": false,  // disabled by default, enable manually when needed
       "autoRecall": true,
       "captureMaxChars": 500
     }
@@ -106,115 +106,115 @@ npm rebuild                    # 然后重新构建原生模块
 }
 ```
 
-### 配置选项
+### Configuration options
 
-- **qdrantUrl** (可选): 外部 Qdrant 服务地址，留空使用内存模式
-- **persistToDisk** (默认 true): 在内存模式下将记忆保存到磁盘
-  - 数据存储在 `~/.openclaw-memory/` 目录（或自定义路径）
-  - 重启后数据不会丢失
-  - 设置为 false 使用纯内存模式（重启后清空）
-  - 仅在内存模式下生效（未配置 qdrantUrl 时）
-- **storagePath** (可选): 自定义存储目录
-  - 留空使用默认路径 `~/.openclaw-memory/`
-  - 支持 `~` 符号表示用户主目录
-  - 仅在 `persistToDisk: true` 时生效
-- **autoCapture** (默认 false): 自动记录对话内容
-  - ⚠️ **隐私保护**: 默认会跳过包含 PII（邮箱、电话号码）的文本
-  - 需要配合 `allowPIICapture` 才能捕获 PII
-- **allowPIICapture** (默认 false): 允许捕获包含 PII 的文本
-  - ⚠️ **隐私风险**: 仅在理解隐私影响后启用
-  - 需要 `autoCapture` 同时启用才生效
-- **autoRecall** (默认 true): 自动注入相关记忆到对话
-- **captureMaxChars** (默认 500): 单条记忆最大字符数
-- **maxMemorySize** (默认 1000): 内存模式下的最大记忆条数
-  - 仅在内存模式下生效（未配置 qdrantUrl 时）
-  - 达到上限时自动删除最旧的记忆（LRU 淘汰策略）
-  - 范围：100-1000000 条
-  - 设置为 999999 表示无限制（不会自动删除旧记忆）
-  - ⚠️ 无限制模式可能导致内存耗尽，请谨慎使用
-  - 外部 Qdrant 模式不受此限制
+- **qdrantUrl** (optional): external Qdrant server URL, leave empty to use in-memory mode
+- **persistToDisk** (default true): save memories to disk in in-memory mode
+  - Data is stored in `~/.openclaw-memory/` (or a custom path)
+  - Data survives restarts
+  - Set to false for pure in-memory mode (cleared on restart)
+  - Only applies in in-memory mode (when qdrantUrl is not configured)
+- **storagePath** (optional): custom storage directory
+  - Leave empty to use the default path `~/.openclaw-memory/`
+  - Supports `~` for the user home directory
+  - Only applies when `persistToDisk: true`
+- **autoCapture** (default false): automatically record conversation content
+  - ⚠️ **Privacy protection**: by default, text containing PII (emails, phone numbers) is skipped even when autoCapture is enabled
+  - Requires `allowPIICapture` to capture PII
+- **allowPIICapture** (default false): allow capturing text containing PII
+  - ⚠️ **Privacy risk**: only enable after understanding the privacy implications
+  - Requires `autoCapture` to also be enabled
+- **autoRecall** (default true): auto-inject relevant memories into conversations
+- **captureMaxChars** (default 500): maximum characters per captured memory
+- **maxMemorySize** (default 1000): maximum number of memories in in-memory mode
+  - Only applies in in-memory mode (when qdrantUrl is not configured)
+  - Oldest memories are automatically deleted when the limit is reached (LRU eviction)
+  - Range: 100–1,000,000 entries
+  - Set to 999999 for unlimited (old memories will not be auto-deleted)
+  - ⚠️ Unlimited mode may exhaust memory — use with caution
+  - External Qdrant mode is not subject to this limit
 
-## 隐私与安全
+## Privacy & Security
 
-### 数据存储
+### Data storage
 
-- **磁盘持久化**（默认）: 数据保存到 `~/.openclaw-memory/` 并在重启后恢复
-  - 设置 `persistToDisk: false` 可切换到纯内存模式（重启后清空）
-- **Qdrant 模式**: 如果配置了 `qdrantUrl`，数据会发送到该服务器
-  - ⚠️ 仅配置受信任的 Qdrant 服务器
-  - 建议使用本地 Qdrant 实例或专用服务账户
+- **Disk persistence** (default): data is saved to `~/.openclaw-memory/` and restored after restarts
+  - Set `persistToDisk: false` to switch to pure in-memory mode (cleared on restart)
+- **Qdrant mode**: if `qdrantUrl` is configured, data is sent to that server
+  - ⚠️ Only configure trusted Qdrant servers
+  - Recommended: use a local Qdrant instance or a dedicated service account
 
-### 网络访问
+### Network access
 
-- **首次运行**: Transformers.js 会从 Hugging Face 下载模型文件（约 25MB）
-- **运行时**: 内存模式无网络请求；Qdrant 模式会连接配置的服务器
+- **First run**: Transformers.js downloads the model files from Hugging Face (~25MB)
+- **Runtime**: in-memory mode makes no network requests; Qdrant mode connects to the configured server
 
-### 自动捕获
+### Auto-capture
 
-- **autoCapture** 默认关闭，需要手动开启
-- **PII 保护**: 默认情况下，即使启用 autoCapture，包含邮箱或电话号码的文本也会被自动跳过
-- **allowPIICapture**: 设置为 true 才能捕获包含 PII 的文本
-  - ⚠️ **仅在理解隐私风险后启用**
-  - 适用场景：个人笔记、测试环境
-  - 不适用场景：共享环境、生产环境、处理他人数据
-- 建议仅在个人环境使用，避免在共享或生产环境开启
+- **autoCapture** is disabled by default and must be enabled manually
+- **PII protection**: by default, text containing emails or phone numbers is automatically skipped even when autoCapture is enabled
+- **allowPIICapture**: must be set to true to capture text containing PII
+  - ⚠️ **Only enable after understanding the privacy risks**
+  - Appropriate for: personal notes, test environments
+  - Not appropriate for: shared environments, production, processing other people's data
+- Recommended for personal environments only — avoid enabling in shared or production settings
 
-### 建议
+### Recommendations
 
-1. 首次使用时在隔离环境测试
-2. 审查 `index.js` 了解数据处理逻辑
-3. 敏感环境建议锁定依赖版本（`npm ci`）
-4. 定期检查存储的记忆内容
+1. Test in an isolated environment before first use
+2. Review `index.js` to understand the data handling logic
+3. For sensitive environments, pin dependency versions (`npm ci`)
+4. Periodically review stored memory content
 
-## 使用
+## Usage
 
-插件提供三个工具：
+The plugin provides three tools:
 
 ### memory_store
-保存重要信息到长期记忆：
+Save important information to long-term memory:
 
 ```javascript
 memory_store({
-  text: "用户喜欢用 Opus 处理复杂任务",
+  text: "User prefers using Opus for complex tasks",
   category: "preference",
   importance: 0.8
 })
 ```
 
 ### memory_search
-搜索相关记忆：
+Search relevant memories:
 
 ```javascript
 memory_search({
-  query: "工作流程",
+  query: "workflow",
   limit: 5
 })
 ```
 
 ### memory_forget
-删除特定记忆：
+Delete a specific memory:
 
 ```javascript
 memory_forget({
   memoryId: "uuid-here"
 })
-// 或通过搜索删除
+// or delete by search
 memory_forget({
-  query: "要删除的内容"
+  query: "content to delete"
 })
 ```
 
-## 技术细节
+## Technical details
 
-### 架构
+### Architecture
 
-- **向量数据库**: Qdrant (内存模式)
-- **Embedding 模型**: Xenova/all-MiniLM-L6-v2 (本地运行)
-- **模块系统**: ES6 modules
+- **Vector database**: Qdrant (in-memory mode)
+- **Embedding model**: Xenova/all-MiniLM-L6-v2 (runs locally)
+- **Module system**: ES6 modules
 
-### 关键实现
+### Key implementation
 
-插件使用**工厂函数模式**导出工具，确保与 OpenClaw 的工具系统兼容：
+The plugin uses the **factory function pattern** to export tools, ensuring compatibility with OpenClaw's tool system:
 
 ```javascript
 export default {
@@ -231,36 +231,36 @@ export default {
 }
 ```
 
-### 常见问题
+### FAQ
 
-**Q: 为什么要用工厂函数？**
+**Q: Why use the factory function pattern?**
 
-A: OpenClaw 的工具系统会调用 `tool.execute()`，直接导出对象会导致 `tool.execute is not a function` 错误。工厂函数确保每次调用都返回新的工具实例。
+A: OpenClaw's tool system calls `tool.execute()`. Exporting a plain object causes a `tool.execute is not a function` error. The factory function ensures a new tool instance is returned on each call.
 
-**Q: 为什么要用 ES6 modules？**
+**Q: Why use ES6 modules?**
 
-A: OpenClaw 的插件加载器期望 ES6 模块格式。需要在 `package.json` 中设置 `"type": "module"`。
+A: OpenClaw's plugin loader expects ES6 module format. The `package.json` must include `"type": "module"`.
 
-**Q: 数据存储在哪里？**
+**Q: Where is data stored?**
 
-A: 内存模式下数据仅在进程运行期间保存。重启后需要重新索引。未来版本会支持持久化存储。
+A: In in-memory mode, data only persists for the lifetime of the process. After a restart, re-indexing is required. Future versions will support persistent storage.
 
-## 开发
+## Development
 
 ```bash
-# 安装依赖
+# Install dependencies
 npm install
 
-# 测试（需要 OpenClaw 环境）
+# Test (requires OpenClaw environment)
 openclaw gateway restart
 ```
 
-## 许可证
+## License
 
 MIT
 
-## 致谢
+## Acknowledgements
 
-- [Qdrant](https://qdrant.tech/) - 向量数据库
-- [Transformers.js](https://huggingface.co/docs/transformers.js) - 本地 ML 推理
-- [OpenClaw](https://openclaw.ai/) - AI 助手框架
+- [Qdrant](https://qdrant.tech/) - vector database
+- [Transformers.js](https://huggingface.co/docs/transformers.js) - local ML inference
+- [OpenClaw](https://openclaw.ai/) - AI assistant framework
